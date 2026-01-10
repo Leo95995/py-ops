@@ -13,6 +13,7 @@ import sys
 import argparse
 # added datetime
 import datetime
+import os
 
 # define CLI arguments for targeted cleanup and automation 
 def get_args():
@@ -41,9 +42,14 @@ def log_event(message, level="INFO"):
 
     # print logs on screen
     print(formatted_message)
+
+    # get the folder where this file is
+    script_dir=os.path.dirname(os.path.abspath(__file__))
+    # construct the absolute path for log file
+    log_path= os.path.join(script_dir, "docker_cleanup.log")
     
     # persistent logging for operational audit and disk usage tracking
-    with open("./docker_cleanup.log", "a") as f:
+    with open(log_path, "a") as f:
         f.write(formatted_message + "\n")
 
 
