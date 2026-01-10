@@ -1,5 +1,9 @@
 #!/usr/bin/env python3 
-# la definizione sopra mi servirà per poterlo runnare in cron etc
+"""
+Docker Cleanup Utility
+Developed by Leo
+Automates the removal of unused Docker resources while ensuring volume safety.
+"""
 
 # library used to launch shell commands
 import subprocess
@@ -69,7 +73,6 @@ def main():
     if not is_docker_available():
         print('Error, Exit \n')
         sys.exit()
-
 
     run_prune(args)
 
