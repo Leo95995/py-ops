@@ -14,6 +14,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+parser = argparse.ArgumentParser(description="Site and SSL Health checker")
+parser.add_argument('-u', "--url", help="Check a specific url")
 
 def send_telegram_alert(message):
     token = os.getenv('TELEGRAM_TOKEN')
@@ -35,7 +37,6 @@ def send_telegram_alert(message):
 def prepare_url(url: str):
     # strip lower
     url = url.strip().lower()
-    print(url, 'NEW')
     if '.' not in url:
         raise ValueError(f"URL non valido: {url} (manca il dominio)")
     if not url.startswith(("http://", "https://")):
@@ -81,7 +82,7 @@ def ssl_checker(hostname: str):
 
 
 def threshold_checker(days: int):
-    print(days)
+
     if days < 7:
         return "CRITICAL"
     if days < 30:
@@ -109,10 +110,6 @@ def log_event(message, level="INFO"):
 
 
 
-parser = argparse.ArgumentParser(description="Site and SSL Health checker")
-parser.add_argument('-u', "--url", help="Check a specific url")
-parser.add_argument('-t', "--threshold",  type=int, help="Minimum days before expiration. Default is 7")
-
 
 # function that contains all the checks on the websites
 def run_checks(url: str):
@@ -123,8 +120,11 @@ def run_checks(url: str):
     if days_left is not None:
         threshold = threshold_checker(days_left)
 
+        icon = "🚨" if threshold == "CRITICAL" else "⚠️"
+
+
         if threshold in ["WARNING", "CRITICAL"]:
-            alert_msg = f"⚠️ <b>{url}</b>\nScadenza SSL: {days_left} giorni!\nStatus: {threshold}"
+            alert_msg = f"{icon} <b>{url}</b>\nScadenza SSL: {days_left} giorni!\nStatus: {threshold}"
             send_telegram_alert(alert_msg)
 
         log_event(f"Days left for cert expiration of {clean_url}: {days_left} days", threshold)
