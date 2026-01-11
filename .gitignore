@@ -1,5 +1,8 @@
 info.md
-
+# virtual environment
+venv/
+.venv/
+env/
 # exclude lgo files
 *.log
 docker-cleaner/docker_cleanup.log
@@ -7,3 +10,7 @@ docker-cleaner/docker_cleanup.log
 # exclude python cache
 __pycache__/
 *.py[cod]
+
+# site checker
+sites.json
+
