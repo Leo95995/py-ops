@@ -38,7 +38,7 @@ def prepare_url(url: str):
     # strip lower
     url = url.strip().lower()
     if '.' not in url:
-        raise ValueError(f"URL non valido: {url} (manca il dominio)")
+        raise ValueError(f"Invalid URL: {url} (missing domain)")
     if not url.startswith(("http://", "https://")):
         url = "https://"+ url
 
@@ -143,12 +143,12 @@ def main_check():
 
     # url check for single file
     if args.url: 
-        print(f"Controllo il singolo url {args.url}")
+        print(f"Checking the url: {args.url}")
         
         run_checks(args.url)
     else:
         # url check from json
-        print(f"Nessun URL , leggo il file site.json")
+        print(f"no url provided reading the file sites.json")
         with open(json_path) as f:
             d = json.load(f)
             for data in d:
