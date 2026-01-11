@@ -2,6 +2,12 @@
 
 **Site-Checker** is a lightweight, proactive monitoring tool written in Python. It is designed to track the health of web services by checking HTTP/S uptime and SSL certificate validity. When a service goes down or a certificate is nearing expiration, it sends real-time push notifications via the **Telegram Bot API** while maintaining a detailed persistent log for audit trails.
 
+
+<div align="center" style="display:flex; gap:20px">
+<img src="../assets/site-checker/telegram_site_check.jpg" width="65%" alt="Push notification" />
+  <img src="../assets/site-checker/site_checker.jpg" width="35%" alt="Bot Chat Detail" />
+</div>
+
 ## Features
 
 * **Uptime Monitoring**: Verifies site availability and logs HTTP status codes (e.g., 200 OK, 404 Not Found).
@@ -83,6 +89,11 @@ To receive real-time alerts, you need to set up a Telegram Bot:
 
 ### Manual Execution
 
+Preview:
+
+![alt text](../site-checker/image.png)
+
+
 Run the full check for all sites in the JSON file:
 
 ```bash
@@ -110,6 +121,11 @@ Run `crontab -e` and add the following line to check your sites for example ever
 ## Logging & Observability
 
 Site-checker produces clean, scannable logs. You can monitor them in real-time on your server:
+
+preview:
+
+<img src="../assets/site-checker/logs.png" width="65%" alt="Push notification" />
+
 
 ```bash
 # watch the sentinel work in real-time
