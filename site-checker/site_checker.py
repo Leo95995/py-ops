@@ -17,6 +17,10 @@ from urllib.parse import urlparse
 # check that ssl certificate are not expired
 
 # check if url starts with http or https and if not add https as default
+
+
+
+
 def prepare_url(url: str):
     # strip lower
     url = url.strip().lower()
@@ -45,23 +49,36 @@ def site_status_checker(url: str):
 def ssl_checker(hostname: str):
     print('####### STARTING WITH SSL CHECK #######')
 
-    context = ssl.create_default_context()
+    try:
 
-    with socket.create_connection((hostname, 443), timeout=5) as sock:
-        with context.wrap_socket(sock, server_hostname=hostname) as ssock:
-            # extract cert information
-            cert = ssock.getpeercert()
-            
-            print(cert)
-            # get data format of certification
-            expiry_str = cert['notAfter']
-            expiry_date = datetime.datetime.strptime(expiry_str, '%b %d %H:%M:%S %Y %Z')
-            
-            # calculate the diff from expiring date and today
-            delta = expiry_date - datetime.datetime.now()
-            return delta.days
+        context = ssl.create_default_context()
+
+        with socket.create_connection((hostname, 443), timeout=5) as sock:
+            with context.wrap_socket(sock, server_hostname=hostname) as ssock:
+                # extract cert information
+                cert = ssock.getpeercert()
+                
+                print(cert)
+                # get data format of certification
+                expiry_str = cert['notAfter']
+                expiry_date = datetime.datetime.strptime(expiry_str, '%b %d %H:%M:%S %Y %Z')
+                
+                # calculate the diff from expiring date and today
+                delta = expiry_date - datetime.datetime.now()
+                return delta.days
+    except Exception as e:
+        log_event(f"Ssl check failed for {hostname}: {e}", level="ERROR")
+        return None
 
 
+def threshold_checker(days: int):
+    print(days)
+    if days < 7:
+        return "CRITICAL"
+    if days < 30:
+        return "WARNING"
+    else:
+        return "OK"
 
 
 # logging function to keep track of results
@@ -93,7 +110,13 @@ def run_checks(url: str):
     clean_url = prepare_url(url)    
     site_status_checker(clean_url)
     days_left = ssl_checker(urlparse(clean_url).hostname)
-    log_event(f"Days left for cert expiration of {clean_url}: {days_left} days")
+
+    if days_left is not None:
+        threshold = threshold_checker(days_left)
+
+        log_event(f"Days left for cert expiration of {clean_url}: {days_left} days", threshold)
+    else:
+        log_event(f"SSL certificate could not be verified for {clean_url}", level="CRITICAL")
 
 def main_check():
     target="./sites.json"
