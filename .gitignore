@@ -3,6 +3,7 @@ info.md
 venv/
 .venv/
 env/
+.env
 # exclude lgo files
 *.log
 docker-cleaner/docker_cleanup.log

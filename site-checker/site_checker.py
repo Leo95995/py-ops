@@ -10,17 +10,28 @@ import datetime
 import json
 import os
 from urllib.parse import urlparse
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
-
-# Prevent website downtime
-# check that ssl certificate are not expired
+def send_telegram_alert(message):
+    token = os.getenv('TELEGRAM_TOKEN')
+    chat_id = os.getenv('TELEGRAM_CHAT_ID')
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    
+    data = {
+        "chat_id": chat_id,
+        "text": f"Site Checker Alert:\n{message}",
+        "parse_mode": "HTML"
+    }
+    
+    try:
+        requests.post(url, data=data, timeout=10)
+    except Exception as e:
+        log_event(f"Error in sending alert via telegram: {e}", level="ERROR")
 
 # check if url starts with http or https and if not add https as default
-
-
-
-
 def prepare_url(url: str):
     # strip lower
     url = url.strip().lower()
@@ -50,7 +61,6 @@ def ssl_checker(hostname: str):
     print('####### STARTING WITH SSL CHECK #######')
 
     try:
-
         context = ssl.create_default_context()
 
         with socket.create_connection((hostname, 443), timeout=5) as sock:
@@ -58,7 +68,6 @@ def ssl_checker(hostname: str):
                 # extract cert information
                 cert = ssock.getpeercert()
                 
-                print(cert)
                 # get data format of certification
                 expiry_str = cert['notAfter']
                 expiry_date = datetime.datetime.strptime(expiry_str, '%b %d %H:%M:%S %Y %Z')
@@ -113,6 +122,10 @@ def run_checks(url: str):
 
     if days_left is not None:
         threshold = threshold_checker(days_left)
+
+        if threshold in ["WARNING", "CRITICAL"]:
+            alert_msg = f"⚠️ <b>{url}</b>\nScadenza SSL: {days_left} giorni!\nStatus: {threshold}"
+            send_telegram_alert(alert_msg)
 
         log_event(f"Days left for cert expiration of {clean_url}: {days_left} days", threshold)
     else:
