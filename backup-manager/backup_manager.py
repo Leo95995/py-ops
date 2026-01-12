@@ -19,7 +19,7 @@ def check_path(source: str) -> bool:
     return os.path.exists(source)
 
 # preparing the output source
-def prepare_output_source(output: str)-> bool: 
+def prepare_output_source(output: str)-> str: 
     current_data = datetime.datetime.now().strftime("%Y_%m_%d_%H-%M")
     if output == None:
         return f"backup_{current_data}.tar.gz"
