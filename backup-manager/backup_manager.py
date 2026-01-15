@@ -7,6 +7,10 @@ import argparse
 
 load_dotenv()
 
+
+
+def telegram_notify():
+    print("Telegram notify for succeded upload on s3 bucket ")
 # get arguments from the function
 def get_args():
     parser=argparse.ArgumentParser(description="Data")
@@ -43,11 +47,6 @@ def create_tar_file(source: str, target: str):
   
 
 # function used to upload the backup on S3 bucket
-"""
-Cosa gli passi come target? 
-Come target gli vai a passare la stringa che rappresenta il file/folder 
-da caricare sul bucket
-"""
 def s3_upload(target: str):    
     # primo parametro la variabile, secondo parametro -> default
     bucket = os.getenv("S3_BUCKET_NAME")
