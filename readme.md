@@ -49,18 +49,17 @@ Automates disk cleanup on production VPS without service interruption.
 * **Cloud & Notifications:** AWS S3, Telegram Bot API
 * **DevOps R&D:** Personal experiments in automation, monitoring, and system management
 
----
 
 ## Usage
 
 Each project includes a dedicated README with **installation, setup, usage, and automation instructions**.
 Navigate to the respective folder to get started.
 
----
+
 
 ## Author
 
-**Leonardo Malvolti** – Fullstack Developer | R&D & Automation
+**Leonardo Malvolti** – Fullstack Developer
 [GitHub](https://github.com/leo95995) | [LinkedIn](https://linkedin.com/in/leonardo-malvolti)
 
 
