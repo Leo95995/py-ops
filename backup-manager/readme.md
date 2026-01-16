@@ -27,7 +27,7 @@
 
 1. **Clone the repository**:
 ```bash
-git clone [https://github.com/leo95995/py-ops.git](https://github.com/leo95995/py-ops.git)
+git clone https://github.com/leo95995/py-ops.git
 
 cd py-ops/backup-manager
 ```
