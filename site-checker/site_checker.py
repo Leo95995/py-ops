@@ -1,3 +1,5 @@
+#!/usr/bin/env python3 
+
 # used to get ssl cert
 import ssl
 # used to open a tcp connection on 443
