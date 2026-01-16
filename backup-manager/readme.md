@@ -64,7 +64,6 @@ python3 backup_manager.py -s /path/to/your/app -o production_backup
 
 ### Automation
 To run backup every day at 0:00 AM, add this to your crontab -e:
-Snippet di codice
 
 ```bash
 0 0 * * * /path/to/backup-manager/venv/bin/python /path/to/py-ops/backup_manager.py -s /home/apps/my-target- app
