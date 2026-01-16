@@ -6,13 +6,26 @@ import boto3
 from dotenv import load_dotenv
 import tarfile
 import argparse
+import requests
 
 load_dotenv()
 
+def send_telegram_alert(message):
+    token = os.getenv('TELEGRAM_TOKEN')
+    chat_id = os.getenv('TELEGRAM_CHAT_ID')
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    
+    data = {
+        "chat_id": chat_id,
+        "text": f"Backup  Manager Alert:\n{message}",
+        "parse_mode": "HTML"
+    }
+    
+    try:
+        requests.post(url, data=data, timeout=10)
+    except Exception as e:
+        print(f"Error in sending telegram alert {e}")
 
-
-def telegram_notify():
-    print("Telegram notify for succeded upload on s3 bucket ")
 # get arguments from the function
 def get_args():
     parser=argparse.ArgumentParser(description="Data")
@@ -84,13 +97,14 @@ def main():
     output=prepare_output_source(args.output)
     # generate the backup tar file
     tar_res = create_tar_file(source, output)
-
     if tar_res["status"]:
-        file_generato = tar_res["file"]
-        if s3_upload(file_generato):
-          print(f"Backup of {file_generato} completed and uploaded")
-          os.remove(file_generato)
+        created_file = tar_res["file"]
+        if s3_upload(created_file):
+          print(f"Backup of {created_file} completed and uploaded")
+          send_telegram_alert(f"ⓘ Uploaded with success the file {created_file} to the s3 bucket")
+          os.remove(created_file)
         else:
+            send_telegram_alert(f"🚨 Error while trying to upload {output} to the s3 bucket")
             print("Failed Upload")
     else:
         print("Compression failed. operation aborted")
